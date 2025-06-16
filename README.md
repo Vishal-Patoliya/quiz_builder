@@ -1,57 +1,81 @@
-# quiz_builder
-Quiz Builder | AI based quiz
+# 🎯 Quiz Builder | AI-Based Quiz Generator
 
-This is a web application of Quiz for developers to generate diffferent questions based on skill set and experties with feature of including different scope.
+Quiz Builder is a web-based application designed for developers to generate tailored quiz questions based on specific skill sets, experience levels, and topic scopes using AI. It utilizes local large language models (LLMs) for fast and private quiz generation.
 
-## 🚀 Run Locally
+---
 
-Clone the project:
+## 🧠 Features
+
+- 🔍 Generate quiz questions based on selected skills and expertise.
+- 🧑‍💻 Choose difficulty levels and topic scope.
+- 🤖 Powered by local AI models using [Ollama](https://ollama.com/).
+- 🚀 Supports integration with **Strands Agent** from AWS AI for enhanced question generation and personalization.
+- ⚡ Fast response with Mistral (lightweight LLM).
+- 🌐 Built with Streamlit for an interactive frontend.
+- 🛠 Developer-friendly setup using `pipenv`.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
 
 ```
 git clone https://github.com/Vishal-Patoliya/quiz_builder.git
+cd quiz_builder
 ```
 
-## To run large language models (LLMs) locally, download from here **[Ollama](https://ollama.com/)**.
+### 2. Install Python Dependencies
+Make sure you have pipenv installed. If not, install it:
 
-Download and run Mistral (lightweight and fast reasoning)
+```
+pip install pipenv
+```
+
+Then install the dependencies:
+
+```
+pipenv install
+```
+
+### 3. Set Up and Run Local LLM (via Ollama)
+Install Ollama from https://ollama.com, then download the Mistral model:
 
 ```
 ollama pull mistral
 ```
 
-Go to the project directory
-```
-cd quiz_builder
-```
+Make sure Ollama is running before starting the quiz builder.
 
-Install dependencies
 
-```
-pipenv install
-```
-## ▶️ Run with Streamlit
-
-Make sure you have Streamlit installed:
+### 4. Run the Application with Streamlit
+Install Streamlit if needed:
 
 ```
 pip install streamlit
 ```
 
-Then run the app from your terminal:
+Navigate to the frontend directory and start the app:
 
 ```
 cd frontend
-```
-
-``` 
 streamlit run main.py
 ```
 
-## 🔗 Links
+### ✅ Requirements
+```
+Python 3.8 or later
+
+pipenv
+
+streamlit
+
+Ollama (for running local LLMs)
+
+Mistral model (ollama pull mistral)
+```
+
+## 🧑‍💼 Author
+Vishal Patoliya
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/vishal-patoliya/)
-
-
-
-
-
