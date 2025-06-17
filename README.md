@@ -2,6 +2,8 @@
 
 Quiz Builder is a web-based application designed for developers to generate tailored quiz questions based on specific skill sets, experience levels, and topic scopes using AI. It utilizes local large language models (LLMs) for fast and private quiz generation.
 
+![Demo of the Quiz App](https://github.com/Vishal-Patoliya/quiz_builder/blob/main/QuizBuilder.gif)
+
 ---
 
 ## 🧠 Features
