@@ -32,14 +32,33 @@ level = st.selectbox("Choose your experience level:", [
 
 prompt = st.text_input("Add Note", placeholder="You can add the context like questions must from defined modules")
 
+def is_valid_json(json_string):
+    try:
+        data = json.loads(json_string)
+        return True, data  # It's valid JSON
+    except json.JSONDecodeError as e:
+        return False, str(e)  # Not valid, return error
+
 # Start quiz button
 if not st.session_state.quiz_started:
     if st.button("Start Quiz"):
         with st.spinner("Setting up  questions for you ..."):
-            generated_response = run_llm(developer_category=developer_type, experience_level=level, note=prompt)
-            st.session_state.quiz_data = json.loads(
-                generated_response.message.get("content").__getitem__(0).get("text"))
-        st.session_state.quiz_started = True
+            quiz_loaded = False
+
+            for attempt in range(2):  # Try up to 2 times
+                is_valid, result = run_llm(developer_category=developer_type, experience_level=level, note=prompt)
+
+                if is_valid:
+                    st.session_state.quiz_data = result
+                    st.session_state.quiz_started = True
+                    quiz_loaded = True
+                    break
+                else:
+                    if attempt == 0:
+                        st.warning("Received invalid quiz format. Retrying...")
+
+            if not quiz_loaded:
+                st.error("❌ Could not generate a valid quiz after retrying. Please try again later.")
 
 # Display Quiz
 if st.session_state.quiz_started:
