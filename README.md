@@ -38,6 +38,8 @@ Then install the dependencies:
 
 ```
 pipenv install
+pipenv install strands-agents strands-agents-tools
+
 ```
 
 ### 3. Set Up and Run Local LLM (via Ollama)
