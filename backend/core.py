@@ -1,11 +1,30 @@
-from strands import Agent
-from strands_tools import http_request
-from strands.models.ollama import OllamaModel
+# Import required modules and tools
+import os
+import logging
 import json
+from dotenv import load_dotenv
+from strands import Agent  # Core agent framework
+from strands_tools import http_request  # Tool to perform HTTP requests
+from strands.models.ollama import OllamaModel  # Specific LLM model from Ollama
+from backend.utils import validate_quiz_options_format, is_valid_json
 
+# Load environment variables
+load_dotenv()
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,  # Set the logging level to DEBUG for detailed logs
+    format="%(asctime)s - %(levelname)s - %(message)s",  # Log format
+    filename="application.log",  # Log file name
+    filemode="a"  # Append to the log file
+)
+
+# Primary function to run LLM with custom query
 def run_llm(developer_category: str, experience_level: str, note: str):
-    agent = Agent(tools=[http_request], model=OllamaModel(host="localhost", model_id="mistral"))
+    # Initialize the Agent with HTTP request tool and specified LLM model
+    agent = Agent(tools=[http_request], model=OllamaModel(host=os.environ["HOST"], model_id=os.environ["MODEL_ID"]))
 
+    # Form the prompt to generate MCQs with clear formatting instructions
     query = f"""
     You are an expert technical interviewer.
     Generate 10 **unique** multiple choice questions (MCQs) for a {developer_category} with {experience_level} experience{" and " + note if note else ""}.
@@ -19,41 +38,18 @@ def run_llm(developer_category: str, experience_level: str, note: str):
     Do **not** include any explanations or introductory text. Only return valid JSON array as output.
     """
 
-    print("Prompt: ", "query")
-
+    # Send query to LLM and retrieve the result
+    logging.debug("Sending query to the LLM.", query)
     result = agent(query)
+
+    # Extract response string from agent output
     response_str = result.message.get("content").__getitem__(0).get("text")
+    logging.debug("Response received: %s", response_str)
+
+    # Check if the response is valid JSON, and if so, attempt to repair malformed options if necessary
     if is_valid_json(response_str):
-        return True, repair_options(json.loads(response_str))
+        logging.info("Valid JSON response received.")
+        return True, validate_quiz_options_format(json.loads(response_str))
     else:
+        logging.warning("Invalid JSON response received.")
         return False, response_str
-
-def is_valid_json(json_string):
-    try:
-        data = json.loads(json_string)
-
-        # Check if top-level is a list
-        if not isinstance(data, list) or len(data) == 0:
-            return False
-
-        for item in data:
-            if not isinstance(item, dict):
-                return False
-            if not all(key in item for key in ("question", "options", "answer")):
-                return False
-            if not isinstance(item["options"], list):
-                return False
-        return True
-    except json.JSONDecodeError:
-        return False
-
-def repair_options(data):
-    if isinstance(data, list):
-        for item in data:
-            if isinstance(item, dict) and "options" in item:
-                if (isinstance(item["options"], list) and
-                        len(item["options"]) == 1 and
-                        isinstance(item["options"][0], str) and
-                        "," in item["options"][0]):
-                    item["options"] = [opt.strip() for opt in item["options"][0].split(",")]
-    return data
